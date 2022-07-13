@@ -52,11 +52,11 @@ class myModel(PreTrainedModel):
         CL_loss = loss_fct(cos_sim, labels)
         
         # ==========================
-        # 2. MLM的损失: masked_lm_loss
+        # 2. MLM的损失: mlm_loss
         # ==========================
         sequence_output = self.encoder(**mlm_input_encoded).last_hidden_state
         prediction_scores = self.cls(sequence_output)
 
-        masked_lm_loss = loss_fct(prediction_scores.view(-1, self.config.vocab_size), mlm_labels.view(-1))
+        mlm_loss = loss_fct(prediction_scores.view(-1, self.config.vocab_size), mlm_labels.view(-1))
         
-        return CL_loss + self.model_args.mlm_weight * masked_lm_loss
+        return CL_loss + self.model_args.mlm_weight * mlm_loss

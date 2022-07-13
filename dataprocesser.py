@@ -38,7 +38,7 @@ def myFn(batch, tokenizer, config):
         padding = True,
         return_tensors = "pt"
     )
-    
+
     mlm_input_ids, mlm_labels = datacollecter.torch_mask_tokens(sentence_encoded["input_ids"])
 
     mlm_input_encoded = {
@@ -57,8 +57,12 @@ def myFn(batch, tokenizer, config):
     
     for i, augged_info in enumerate(augged_info_list):
         for info in augged_info:
-            augged_info_idx.append([i, info[0]])
-            augged_info_input_ids.append(info[1])
+            if info[0] + 1 <= config.max_length - 2:
+                augged_info_idx.append([i, info[0] + 1])  # `+1` 是因为前面有[CLS]向量
+                augged_info_input_ids.append(info[1])
+    
+    if len(augged_info_idx) == 0 or len(augged_info_input_ids) == 0:
+        return [sentence_encoded, None, None, mlm_input_encoded, mlm_labels.to(config.device)]
 
     augged_info_input_ids = tokenizer(
         augged_info_input_ids,

@@ -15,7 +15,7 @@ class Trainer:
         self.optimizer = AdamW(self.model.parameters(), lr=self.config.lr)
         self.scheduler = get_cosine_schedule_with_warmup(self.optimizer, 0, len(self.train_dataloader) * self.config.epoches)
         
-        self.training_info = "Training Epoch[ {} | {} ] AvgLoss = {:.8f}"
+        self.training_info = "Training Epoch[ {} | {} ] Step[ {} ] AvgLoss = {:.8f}"
     
     def train(self):
         step = 0
@@ -32,10 +32,10 @@ class Trainer:
                 
                 loss_list.append(loss.item())
                 avg_loss = sum(loss_list) / len(loss_list)
-                train_bar.set_description(self.training_info.format(epoch, self.config.epoches, avg_loss))
+                train_bar.set_description(self.training_info.format(epoch, self.config.epoches, step, avg_loss))
                 
                 if step % (int(len(self.train_dataloader) * self.config.epoches / 500)) == 0:
-                    self.logger.info(self.training_info.format(epoch, self.config.epoches, avg_loss))
+                    self.logger.info(self.training_info.format(epoch, self.config.epoches, step, avg_loss))
                     self.model.save_pretrained(self.config.save_path)
                 step += 1
 
