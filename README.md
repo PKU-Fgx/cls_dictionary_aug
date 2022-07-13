@@ -1,6 +1,6 @@
 ## cls_dictionary_aug
 ### 思路介绍
-主要就是将一段文本中的某些在字典中有释义的token用其解释的cls(pooler)向量去替换其自身的向量然后做对比学习
+主要就是将一段文本中的某些在字典中有释义的token用其解释的`cls`(`pooler`)向量去替换其自身的向量然后做对比学习
 ### 文件介绍
 1. `main.py`: 入口函数
 2. `configuration.py`: 配置文件
